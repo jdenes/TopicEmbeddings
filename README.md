@@ -1,7 +1,7 @@
 # Topic Embeddings Framework
 A code to create and test document embeddings using topic models. Based on forthcoming paper (maybe): "Document Embedding Using Topic Models", a Master Thesis at Sorbonne Université.
 
-Topic Embeddings Framework is a Python 3 open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performanced against mainstream embeddings such as bag of word or doc2vec.
+Topic Embeddings Framework is a [Python 3](https://www.python.org/downloads/) open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag of word or doc2vec.
 
 **Author :** [Julien Denes](https://github.com/jdenes/), Sciences Po médialab.
 
@@ -56,7 +56,7 @@ where parameters in [ ] are optional. More parameters in different methods are s
 
 The output files are saved in the "results" folder containing `corpusBTM.theta`, `corpusBTM.phi`, `corpusBTM.topWords`, `corpusBTM.topicAssignments` and `corpusBTM.paras` referring to the document-to-topic distributions, topic-to-word distributions, top topical words, topic assignments and model parameters, respectively. 
 
-### Step 2: use your embedding(s) on classification task
+### Step 2: use your embedding(s) on a classification task and interpret
 
 **Additional input:** your file with labels.
 
@@ -73,7 +73,3 @@ The output files are saved in the "results" folder containing `corpusBTM.theta`,
 **Examples:**
 
 	$ java -jar jar/STTM.jar -model ClusteringEval -label dataset/corpus.LABEL -dir results -prob corpusBTM.theta
-    
-### Step 3: visualize and topic/label inference on unseen documents
-
-Forthcoming!
