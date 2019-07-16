@@ -14,6 +14,7 @@ Topic Embeddings Framework is a [Python 3](https://www.python.org/downloads/) op
 * List of the
 * algorithms implemented
 * include references
+* DTM: input has to be a .csv file with a column called `year` to perform time slicing (see DTM architecture for better understanding). Also the file needs to be sorted according to this column.
 
 ### Supported
 
@@ -26,11 +27,11 @@ Topic Embeddings Framework is a [Python 3](https://www.python.org/downloads/) op
 
 You can use either your data or 20News in order to perform classification and assess performances.
 
-**File format of input corpus:**  Similar to file `corpus.txt`  in the `data` folder, we assume that each line in the input corpus represents a document. Here, a document is a sequence of words/tokens separated by white space characters. The users should preprocess the input corpus before training the short text topic models, for example: down-casing, removing non-alphabetic characters and stop-words, removing words shorter than 3 characters and words appearing less than a certain times. Otherwise you may also implement a .csv ?
+**File format of input corpus:**  Similar to file `corpus.txt` in the `data` folder, we assume that each line in the input corpus represents a document. Here, a document is a sequence of words/tokens separated by white space characters. The users should preprocess the input corpus before training the short text topic models, for example: down-casing, removing non-alphabetic characters and stop-words, removing words shorter than 3 characters and words appearing less than a certain times. Otherwise you may also implement a .csv ?
 
 ## Usage
 
-Our algorithm runs in two stemps. First, generate the embedding from the sata and save it. Second, run classification tests to assess the performance of your embeddings.
+Our algorithm runs in two steps. First, generate the embedding from the sata and save it. Second, run classification tests to assess the performance of your embeddings.
 
 ### Step 1: create embeddings from the data
 
