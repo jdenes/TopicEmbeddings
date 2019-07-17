@@ -23,9 +23,14 @@ Topic Embeddings Framework is a [Python 3](https://www.python.org/downloads/) op
 * The list
 * See [Usage](#Usage) to get how to use both
 
+## Requirements
+
+* python 3.6+ with packages in requirement.txt
+* To be able to run R scripts: R
+
 ## Input data
 
-You can use either your data or 20News in order to perform classification and assess performances.
+You can use either your data or 20News in order to perform classification and assess performances. Own data format must include:
 
 **File format of input corpus:**  Similar to file `corpus.txt` in the `data` folder, we assume that each line in the input corpus represents a document. Here, a document is a sequence of words/tokens separated by white space characters. The users should preprocess the input corpus before training the short text topic models, for example: down-casing, removing non-alphabetic characters and stop-words, removing words shorter than 3 characters and words appearing less than a certain times. Otherwise you may also implement a .csv ?
 
