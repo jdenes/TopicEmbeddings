@@ -18,15 +18,15 @@ from interpretation import *
 if __name__ == '__main__':
     freeze_support()
 
-    INPUT = '20News'  # './datasets/dataset_ina_radio.csv'
-    PROJECT = '20News'
-    EMBEDDING = 'LDA'
-    ALGO = 'ADAB'
-    K = 20
+    INPUT = './datasets/dataset_ina_radio.csv'
+    PROJECT = 'INA'
+    EMBEDDING = 'CTM'
+    ALGO = 'LOGIT'
+    K = 2
     PREPROCESS = True
-    MODE = 'interpret'
+    MODE = 'all'
     SAMPLING = 'OVER'
-    LANGUAGE = 'english'
+    LANGUAGE = 'french'
 
     check_intergrity(MODE, PROJECT, INPUT, EMBEDDING, K, ALGO, PREPROCESS, SAMPLING, LANGUAGE)
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         print("Creating embedding using {} with size {}...".format(EMBEDDING, K))
         dictionary = Dictionary(corpus)
         dictionary.filter_extremes(no_below=2, no_above=0.5)
-        X, mod = construct_corpus(corpus, dictionary, method=EMBEDDING, vector_size=K, slices=slices)
+        X, mod = construct_corpus(corpus, dictionary, method=EMBEDDING, vector_size=K, input=INPUT, slices=slices, language=LANGUAGE)
 
         filename = './results/{}/embeddings/{}_embedding_{}.csv'.format(PROJECT, EMBEDDING, K)
         np.savetxt(filename, X, delimiter=",")
@@ -114,12 +114,16 @@ if __name__ == '__main__':
                     interp.to_csv(filename, encoding='utf-8')
 
                 # Interpretation LDA
-                if EMBEDDING == 'LDA':
+                elif EMBEDDING == 'LDA':
                     filename = './results/{}/models/{}_model_{}.model'.format(PROJECT, EMBEDDING, K)
                     mod = LdaMulticore.load(filename)
                     interp = interpret_lda(dictionary, mod, imp, coef)
                     filename = './results/{}/interpretation/{}_interpretation_{}_class_{}.csv'.format(PROJECT, EMBEDDING, K, i)
                     interp.to_csv(filename, encoding='utf-8')
+
+                else:
+                    print('Cannot provide interpretation for embeddings other than BOW and LDA for now.')
+                    sys.exit(1)
         else:
             print("Cannot provide interpretation for classifier other than logistic regression (LOGIT).")
             sys.exit(1)

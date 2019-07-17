@@ -62,7 +62,7 @@ where parameters in [ ] are optional. More parameters in different methods are s
 
 The output files are saved in the "results" folder containing `corpusBTM.theta`, `corpusBTM.phi`, `corpusBTM.topWords`, `corpusBTM.topicAssignments` and `corpusBTM.paras` referring to the document-to-topic distributions, topic-to-word distributions, top topical words, topic assignments and model parameters, respectively. 
 
-### Step 2: use your embedding(s) on a classification task and interpret
+### Step 2: use your embedding(s) on a classification task
 
 **Additional input:** your file with labels.
 
@@ -79,3 +79,10 @@ The output files are saved in the "results" folder containing `corpusBTM.theta`,
 **Examples:**
 
 	$ java -jar jar/STTM.jar -model ClusteringEval -label dataset/corpus.LABEL -dir results -prob corpusBTM.theta
+
+### Step 3: interpret
+
+
+## Concluding remark
+
+Some topic models are very slow to compute! Depending on the size of your data $n$ and your vector size $K$, you may have to wait up to several days before convergence. Reasonable parameters (i.e. reasonable computing time and space) are $K <= 500$ and $n <= 10^6$.

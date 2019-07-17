@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import subprocess
 import pandas as pd
 import numpy as np
 
@@ -18,15 +19,14 @@ def load_stm_encoding():
     dat = pd.read_csv('../Data Russie/encodings/RADIO_STM_ENCODING_1000.csv', encoding='utf-8')
     X = np.array(dat[[c for c in dat.columns if 'Topic' in c]])
     del dat
-    return X
+    return X, None
 
 
 # CTM
-def load_ctm_encoding():
-    odata = pd.read_csv('../Data Russie/encodings/RADIO_CTM_ENCODING_2.csv', encoding='utf-8')
-    X = np.array(odata[[c for c in odata.columns if 'V' in c]])
-    del odata
-    return X
+def create_ctm_encoding(vector_size, input, language):
+    subprocess.call("Rscript ./external/ctm.R {} {} {}".format(input, vector_size, language), shell=True)
+    X = np.loadtxt('./external/raw_embeddings/tmp_{}_EMBEDDING_{}.csv'.format('CTM', vector_size))
+    return X, None
 
 
 # PTM
@@ -100,7 +100,7 @@ def create_dtm_encoding(corpus, vector_size, dictionary, slices):
     return mod.gamma_, mod
 
 
-def construct_corpus(corpus, dictionary, method='BOW', vector_size=200, slices=None):
+def construct_corpus(corpus, dictionary, method='BOW', vector_size=200, input=None, slices=None, language='english'):
     if method == 'DOC2VEC':
         X, mod = create_d2v_encoding(corpus, vector_size)
     elif method == 'POOL':
@@ -112,18 +112,18 @@ def construct_corpus(corpus, dictionary, method='BOW', vector_size=200, slices=N
     elif method == 'LDA':
         X, mod = create_lda_encoding(corpus, vector_size, dictionary)
     elif method == 'HDP':
-        print("Warning: HDP is hierarchical hence parameter K is ignored.")
+        print("HDP is hierarchical hence parameter K is ignored.")
         X, mod = create_hdp_encoding(corpus, vector_size, dictionary)
     elif method == 'DTM':
         X, mod = create_dtm_encoding(corpus, vector_size, dictionary, slices)
     elif method == 'STM':
-        print("Warning: STM uses pre-computed embeddings using https://cran.r-project.org/web/packages/stm/")
+        print("STM is going to run a R subprocess to construct embedding...")
         X, mod = load_stm_encoding()
     elif method == 'CTM':
-        print("Warning: CTM loads pre-computed embeddings using https://cran.r-project.org/web/packages/topicmodels/")
-        X, mod = load_ctm_encoding()
+        print("CTM is going to run a R subprocess to construct embedding...")
+        X, mod = create_ctm_encoding(vector_size, input, language)
     elif method == 'PTM':
-        print("Warning: PTM loads pre-computed embeddings using https://github.com/qiang2100/STTM")
+        print("PTM loads pre-computed embeddings using https://github.com/qiang2100/STTM")
         X, mod = load_ptm_encoding()
     # Default: Bag of Words
     else:
