@@ -18,19 +18,23 @@ from interpretation import *
 if __name__ == '__main__':
     freeze_support()
 
-    INPUT = './datasets/example.csv'
-    PROJECT = 'INA'
-    EMBEDDING = 'CTM'
-    ALGO = 'LOGIT'
-    K = 5
-    PREPROCESS = True
-    MODE = 'all'
-    SAMPLING = 'OVER'
-    LANGUAGE = 'french'
+    param = read_options()
+    MODE, INPUT, EMBEDDING = param.mode, param.input, param.embed
+    PROJECT, K = param.project, param.k
+    PREPROCESS, LANGUAGE = param.prep, param.langu
+    ALGO, SAMPLING = param.algo, param.samp
 
-    check_intergrity(MODE, PROJECT, INPUT, EMBEDDING, K, ALGO, PREPROCESS, SAMPLING, LANGUAGE)
+    # INPUT = './datasets/example.csv'
+    # PROJECT = 'INA'
+    # EMBEDDING = 'CTM'
+    # ALGO = 'LOGIT'
+    # K = 5
+    # PREPROCESS = True
+    # MODE = 'all'
+    # SAMPLING = 'OVER'
+    # LANGUAGE = 'french'
 
-    # First mode: create embedding
+    # STEP 1: CREATE EMBEDDINGS
     if MODE == 'all' or MODE == 'encode':
 
         print('Loading data...')
@@ -66,7 +70,7 @@ if __name__ == '__main__':
             mod.save(filename)
         print('Encoding done!')
 
-    # Second mode: train model
+    # STEP 2: RUN CLASSIFICATION TASK
     if MODE == 'all' or MODE == 'classify':
 
         print('Loading labels...')
@@ -90,7 +94,7 @@ if __name__ == '__main__':
 
         print('Classification done!')
 
-    # Interpret
+    # STEP 3: INTERPRET
     if MODE == 'all' or MODE == 'interpret':
 
         print('Loading data...')

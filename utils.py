@@ -1,9 +1,10 @@
 import sys
 import os
 import re
+import time
 import unicodedata
-import spacy
 import joblib
+import argparse
 import pandas as pd
 import numpy as np
 
@@ -75,12 +76,6 @@ def my_remove_stopwords(s, language):
     stopwords = set(stopwords + specials)
     s = utils.to_unicode(s)
     return " ".join(w for w in s.split() if w.lower() not in stopwords)
-
-
-def my_stemmer(doc):
-    nlp = spacy.load("fr_core_news_sm")
-    doc_lem = nlp(doc)
-    return ' '.join([d.lemma_ for d in doc_lem])
 
 
 def transcorp2matrix(transcorp, bow_corpus, vector_size):
@@ -185,24 +180,43 @@ Try to use the same command with '-mode classify' first (instead of '-mode inter
         sys.exit(1)
 
 
-# Verifying inputs #
-
-def check_intergrity(MODE, PROJECT, INPUT, EMBEDDING, K, ALGO, PREPROCESS, SAMPLING, LANGUAGE):
-    if MODE not in ['all', 'encode', 'classify', 'interpret']:
-        print("Option '-mode' must be one of: 'all', 'encode', 'classify', 'interpret'.")
-        sys.exit(1)
-    if EMBEDDING not in ['BOW', 'DOC2VEC', 'POOL', 'BOREP', 'LSA', 'LDA', 'HDP', 'DTM', 'STM', 'CTM', 'PTM']:
-        print("Option '-embed' must be one of: 'BOW', 'DOC2VEC', 'POOL', 'BOREP', 'LSA', 'LDA', 'HDP', 'DTM', 'STM', 'CTM', 'PTM'.")
-        sys.exit(1)
-    if not isinstance(K, int) or K < 2:
-        print("Option '-k' must be integer greater that 1.")
-        sys.exit(1)
-    if ALGO not in ['LOGIT', 'NBAYES', 'ADAB', 'DTREE', 'KNN', 'ANN', 'SVM']:
-        print("Option '-algo' must be one of: 'LOGIT', 'NBAYES', 'ADAB', 'DTREE', 'KNN', 'ANN', 'SVM'.")
-        sys.exit(1)
-    if not isinstance(PREPROCESS, bool):
-        print("Option '-prep' must be either 'True' or 'False'.")
-        sys.exit(1)
-    if SAMPLING not in ['OVER', 'UNDER', 'NONE']:
-        print("Option '-samp' must be one of: 'OVER', 'UNDER', 'NONE'.")
-        sys.exit(1)
+# Parser to get user's inputs
+def read_options():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-mode',
+                        choices=['all', 'encode', 'classify', 'interpret'],
+                        required=True,
+                        help="Step you want to perform (can be 'all').")
+    parser.add_argument('-input',
+                        type=str,
+                        required=True,
+                        help="Path to your .csv input file, or '20News'.")
+    parser.add_argument('-embed',
+                        choices=['BOW', 'DOC2VEC', 'POOL', 'BOREP', 'LSA', 'LDA', 'HDP', 'DTM', 'STM', 'CTM', 'PTM'],
+                        required=True,
+                        help='Embedding to use.')
+    parser.add_argument('-project',
+                        type=str,
+                        default=time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),
+                        help='Name of the project where to find the results later.')
+    parser.add_argument('-k',
+                        type=int,
+                        default=200,
+                        help='Size of your embedding vectors.')
+    parser.add_argument('-prep',
+                        type=bool,
+                        default=True,
+                        help='Specify if you want to pre-process text (i.e. lowercase, lemmatize...).')
+    parser.add_argument('-langu',
+                        type=str,
+                        default='english',
+                        help='Language to use for text pre-processing.')
+    parser.add_argument('-algo',
+                        choices=['LOGIT', 'NBAYES', 'ADAB', 'DTREE', 'KNN', 'ANN', 'SVM'],
+                        default='LOGIT',
+                        help='Classifier to use.')
+    parser.add_argument('-samp',
+                        choices=['OVER', 'UNDER', 'NONE'],
+                        default='NONE',
+                        help='Sampling to use to prevent imbalanced data sets.')
+    return parser.parse_args()
