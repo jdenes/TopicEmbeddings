@@ -1,99 +1,120 @@
 # Topic Embeddings Framework
-A code to create and test document embeddings using topic models. Based on forthcoming paper (maybe): "Document Embedding Using Topic Models", a Master Thesis at Sorbonne Université.
 
-Topic Embeddings Framework is a Python 3 open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag of word or doc2vec.
+Topic Embeddings Framework is a Python 3 open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag-of-words or doc2vec. It is based on forthcoming (maybe) paper "Document Embeddings Using Topic Models", a Master's Thesis at Sorbonne Université.
 
-**Author :** [Julien Denes](https://github.com/jdenes/), Sciences Po médialab.
+**General idea:** the document embeddings we propose, called topic embeddings, use one particular output of any trained topic models, know as topics proportion. It provides for each document a unit vector where the ith component indicates "how much" the document relates to topic i. We test the simple hypothesis that such vector is an insightful representation of the document for various NLP tasks.
+
+
+**Author :** [Julien Denes](https://github.com/jdenes/), [Sciences Po médialab](https://github.com/medialab).
 
 ---
 
 ## Algorithms
 
-### Included
+Several document embeddings are available for test in this framework. Some are built-in and very easy to use, and others need preliminary work from the user.
 
-Some embeddings using topic models are directly 
+### Built-in
 
-**References:**
-* Bag of Words (abbreviated BOW) using gensim
-* doc2vec (DOC2VEC) using gensim
-* Word Embedding Agregation (POOL) using gensim's word2vec and mean as pooling function
-* Bag of Random  Embedding  Projection (BOREP)
-* Latent Semantic Analysis (LSA) using gensim
+**Reference embeddings:** standard models bag-of-words ([BoW](https://doi.org/10.1080/00437956.1954.11659520)), [doc2vec](https://arxiv.org/abs/1405.4053) and Latent Semantic Analysis ([LSA](https://doi.org/10.1002/(SICI)1097-4571(199009)41:6%3C391::AID-ASI1%3E3.0.CO;2-9)) are proposed using [gensim](https://radimrehurek.com/gensim/)'s implementation. The framework also includes Word Embedding Aggregation (abreviated Pool), which represents a document as the aggregation of its words representations, using gensim's [word2vec](https://arxiv.org/abs/1310.4546) and mean as pooling function. Finally Bag of Random  Embedding  Projection ([BoREP](https://arxiv.org/abs/1901.10444)), which randomly projects words' embeddings to create the document's one, is also proposed.
 
-**Topic embeddings:**
-* Latent Dirichlet Allocation (LDA) using gensim
-* Hierarchical Dirichlet Process (HDP)
-* Dynamic Topic Model (DTM) using gensim's wrapper
-* Structural Topic Model (STM) using R package stm
-* Correlated Topic Model (CTM) using R package topicmodels
+**Topic embeddings:** the most classical topic models are available to test: Latent Dirichlet Allocation ([LDA](https://dl.acm.org/citation.cfm?id=944937)), Hierarchical Dirichlet Process ([HDP](https://doi.org/10.1198/016214506000000302)), Dynamic Topic Model ([DTM](https://doi.org/10.1145/1143844.1143859)), which all rely on gensim, as well as Structural Topic Model ([STM](https://doi.org/10.1111/ajps.12103)) using R package [stm](https://cran.r-project.org/web/packages/stm/index.html) and Correlated Topic Model ([CTM](https://dl.acm.org/citation.cfm?id=2976267)) using R package [topicmodels](https://cran.r-project.org/web/packages/topicmodels/index.html).
 
 ### Supported
 
-Unfortunatly, not all topic models are implented in Python or R. We support Pseudo-Document-Based Topic Model (PTM), which can be computed using using [STTM](https://github.com/qiang2100/STTM). Once you've done that, simply import the topic proportion file into `/external/` and name it `raw_embeddings/tmp_PTM_EMBEDDING_K.csv` where $K$ if your vector size.
+Unfortunatly, not all topic models have simple implementations in Python or R. We support Pseudo-Document-Based Topic Model ([PTM](https://www.kdd.org/kdd2016/subtopic/view/topic-modeling-of-short-texts-a-pseudo-document-view)), which can be computed using using [STTM](https://github.com/qiang2100/STTM). Once you've done that, simply import the topic proportion file into `external/raw_embeddings/` and name it `tmp_PTM_EMBEDDING_K.csv` where K is your vector size. Remark that any topic proportion matrix of any topic model could be integrated into this framework, so do not hesitate to suggest some!
 
 ## Requirements
 
-* [Python 3.6+](https://www.python.org/downloads/) with packages in `requirements.txt`. To install them, simply run `pip install -r requirements.txt`.
+* [Python 3.6+](https://www.python.org/downloads/) with packages listed in `requirements.txt`. To install them, simply run `pip install -r requirements.txt`.
 * If you intend to use STM or CTM, you will also need to have [R](https://www.r-project.org/) installed. Required packages will install automatically.
-* Please make sure that both `python` and `Rscript` can be run in your terminal no matter the directory you're in. If you're using Windows, consider adding them to your `PATH` environment variable ([see an example](https://datatofish.com/add-python-to-windows-path/)).
+* Please make sure that both `python` and `Rscript` commands can be run in your terminal no matter the directory you're in. If you're using Windows, consider adding them to your `PATH` environment variable ([see an example](https://datatofish.com/add-python-to-windows-path/)).
 
 ## Input data
 
-To possible data inputs are available for now:
-* You can use the [20 Newsgroups dataset](http://qwone.com/~jason/20Newsgroups/), a popular standard data set for experiments in NLP,
-* Or you can use your own data. If you wish to do so, you need to provide a `.csv` file with two mandatory columns: one called `text` containing your text, the other called `label` containing the document's label in numerical format. A column called `year` can be optionally included to be used in DTM or STM, in which case your data **must** be sorted according to this column. All other columns will be ignored, except by STM. An example file is provided: `datasets/example.csv`.
+Two possible data inputs are available for now:
+* **[20 Newsgroups data set](http://qwone.com/~jason/20Newsgroups/)**, a popular standard data set for experiments in NLP. Data will be automatically imported.
 
-**File format of input corpus:**  Similar to file `corpus.txt` in the `data` folder, we assume that each line in the input corpus represents a document. Here, a document is a sequence of words/tokens separated by white space characters. The users should preprocess the input corpus before training the short text topic models, for example: down-casing, removing non-alphabetic characters and stop-words, removing words shorter than 3 characters and words appearing less than a certain times. Otherwise you may also implement a .csv ?
+* **Your own data.** If you wish to do so, you need to provide a `.csv` file with two mandatory columns: one called `text` containing your text, the other called `labels` containing the document's label in numerical format. A column called `year` can be optionally included to be used in DTM or STM, in which case your data must be sorted according to this column. All other columns will be ignored, except by STM. An example file is provided: `datasets/example.csv`.
+
 
 ## Usage
 
-Our algorithm runs in two steps. First, generate the embedding from the sata and save it. Second, run classification tests to assess the performance of your embeddings.
+Our algorithm runs in three steps. First, **generate the embedding** from the data and save it. Second, **run classification tests** to assess the performance of your embeddings. Third, **interpret the results** easily. All 3 steps save files on your disk to allow you to run them separately. 
 
-### Step 1: create embeddings from the data
+### Step 1: create embeddings from the corpus
 
-**Train the algorithms to producein by executing:**
+The first steps consists in getting a vector representation of each document in your corpus. You may either use reference embeddings, or topic embeddings.
 
-	$ python encode.py –model <LDA or BTM or PTM or SATM or DMM or WATM> -corpus <path/to/input_corpus_file.txt> [-ntopics <int>] [-niters <int>] [-twords <int>] [-name <String>]
+**To produce it, simply run this command in your terminal:**
 
-where parameters in [ ] are optional. More parameters in different methods are shown in "src/utility/CmdArgs"
+	$ python main.py –mode encode -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>]
 
-`-model`: Specify the topic model LDA or DMM
+where parameters in `[ ]` are optional. In detail, each parameter corresponds to:
 
-`-corpus`: Specify the path to the input corpus file.
+`-mode encode`: to specify that you're computing your embeddings.
 
-`-ntopics <int>`: Specify the number of topics. The default value is 200.
+`-input`: specify the path to your custom input file, or `20News` to use 20 Newsgroups.
 
-`-nwords <int>`: Specify the number of the most frequent words to use (if applicable). The default value is 20.
+`-embed <String>`: type of embedding to use. Must be one of: `BOW, DOC2VEC, POOL, BOREP, LSA, LDA, HDP, DTM, STM, CTM, PTM`.
 
-`-name <String>`: Specify a name to the topic modeling experiment. The default value is `model`.
+`-project`: name of your project to find the results later. Default is current day and time.
+
+`-k <int>`: size of your embeddings, greater than 1. Default is 200.
+
+`-prep <bool>`: specify if you want to preprocess (i.e. lowercase, lemmatize...). Default is `True`.
+
+`-langu <String>`: if you selected preprocessing, language to use (in english). Default is `english`.
 
 **Examples:**
 
-	$ java -jar jar/STTM.jar -model BTM -corpus dataset/corpus.txt -name corpusBTM
+	$ python main.py –mode encode -input datasets/example.csv -embed LDA -prep True -langu french
+    
+    $ python main.py –mode encode -input 20News -embed STM -project 20NewsTest -k 500
 
-The output files are saved in the "results" folder containing `corpusBTM.theta`, `corpusBTM.phi`, `corpusBTM.topWords`, `corpusBTM.topicAssignments` and `corpusBTM.paras` referring to the document-to-topic distributions, topic-to-word distributions, top topical words, topic assignments and model parameters, respectively. 
+Once the code is done running, you'll see a new folder in `results` having your project's name. Its subfolder `embeddings` contains the matrix of vector representation of your corpus, with one row per document (if none has been dropped) and k columns. In subfolder `models`, we store the models that were used to produce those embeddings. **Notice that you can (and should!) produce several embeddings for your data set and compare them in Step 2!** They will be all be stored in your project's folder.
+
+Please note that some topic models have specific behaviors. STM and CTM run `R` scripts located in `external` and store temporary files in `external/raw_embeddings`. PTM requires users to pre-compute embeddings as described above.
 
 ### Step 2: use your embedding(s) on a classification task
 
-**Additional input:** your file with labels.
+This step uses the embedding in the classification task of your choice according to the `label` column provided in your input file (or the news group for 20 Newsgroups). Several algorithms are proposed: logistic regression (logit), Naive Baiyes (NBayes), AdaBoost (AdaB), KNN with 3 neighbors, Decision Tree (DTree), Artificial Neural Network (ANN) with 3 layers of size 1000, 500 and 100, and finaly a SVM with RBF kernel.
 
-**Usage:**
+**To run a classification, simply use this command in your terminal:**
 
-	$ python classify.py –model True –label <label_file_path> -prob <Document-topic-prob/Suffix>
+	$ python main.py –mode classify -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-algo <String>] [-samp <String>]
 
-`–label`: Specify the path to the ground truth label file. Each line in this label file contains the golden label of the corresponding document in the input corpus. See files `corpus.LABEL` and `corpus.txt` in the `dataset` folder.
+where parameters in `[ ]` are optional. Parameters `-input`, `-embed`, `-project` and `-k` should be the same as in Step 1. The new parameters corresponds to:
 
-`-dir`: Specify the path to the directory containing document-to-topic distribution files.
+`-mode classify`: to specify that you're using embeddings to perform classification task.
 
-`-prob`: Specify a document-to-topic distribution file OR a group of document-to-topic distribution files in the specified directory.
+`-algo <String>`: classifier to use. Must be one of: `LOGIT, NBAYES, ADAB, DTREE, KNN, ANN, SVM`. Default is `LOGIT`.
+
+`-samp <String>`: sampling to use on data to prevent imbalanced data sets. Must be one of `OVER, UNDER, NONE`. Default is `NONE`.
 
 **Examples:**
 
-	$ java -jar jar/STTM.jar -model ClusteringEval -label dataset/corpus.LABEL -dir results -prob corpusBTM.theta
+	$ python main.py –mode classify -input datasets/example.csv -embed LDA -algo SVM -samp OVER
+    
+    $ python main.py –mode classify -input 20News -embed STM -project 20NewsTest -k 500
+    
+This step produces new files in your project's folder, under `performances`, with various performence metrics for your embedding: accuracy, precision, recall, and F1-score. Some files are also created under `classifiers` to store the trained classifier. At this point, you are able to assess if topic embeddings perform well on your data set and task!
 
 ### Step 3: interpret
 
+You can know use the power of interpretability of topic models to get insights on what each dimenson of your embedding represent, and which of those dimensions matter in the classification task you used. This requires of course that you use a logistic regression (`LOGIT`) as a classifier in Step 2. Please note that at this step of development of the framework, only `BOW` and `LDA` approaches can be interpreted. Other built-in topic models should follow.
+
+**To get the interpretation, simply run this command in your terminal:**
+
+	$ python main.py –mode interpret -input <path/to/input> -embed <BOW or LDA> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>] [-algo LOGIT] [-samp <String>]
+
+Note that all parameters `-input`, `-embed`, `-project`, `-k`, `-prep`, `-langu`, `-algo`, and `-samp` should be the same as in Step 1 or 2. New parameter value `–mode interpret` specifies that you are performing the interpretation.
+
+### All-at-once command
+
+Now that you understand all 3 steps of the process, we shall reveal the command to run all three steps in a row:
+
+	$ python main.py –mode all -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>] [-algo <String>] [-samp <String>]
 
 ## Concluding remark
 
-Some topic models are very slow to compute! Depending on the size of your data $n$ and your vector size $K$, you may have to wait up to several days before convergence. Reasonable parameters (i.e. reasonable computing time and space) are $K <= 500$ and $n <= 10^6$.
+Some topic models are very slow to compute! Depending on the size of your data N and your vector size K, you may have to wait up to several days before convergence. Reasonable parameters (i.e. reasonable computing time and space) are K < 500 and N < 10^5.
