@@ -1,15 +1,12 @@
-#! /usr/bin/Rscript
-
-library(topicmodels)
-library(data.table)
 source("./external/utils.R")
+loadPackages()
 
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 3) {
   stop("Three arguments must be supplied: input (.csv) file, K (vector size) and language.", call.=FALSE)
 } else {
   filepath = args[1]
-  K = args[2]
+  K = as.numeric(args[2])
   language = args[3]
 }
 
@@ -17,7 +14,6 @@ if (length(args) != 3) {
 
 # Load data
 data = read.csv(filepath, header=TRUE, encoding="UTF-8", stringsAsFactors=FALSE)
-data$year = as.numeric(data$year)
 rownames(data) = 1:nrow(data)
 
 ###################### CORRELATED TOPIC MODEL ######################

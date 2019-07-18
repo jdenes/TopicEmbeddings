@@ -15,10 +15,9 @@ from utils import *
 
 
 # STM
-def load_stm_encoding():
-    dat = pd.read_csv('../Data Russie/encodings/RADIO_STM_ENCODING_1000.csv', encoding='utf-8')
-    X = np.array(dat[[c for c in dat.columns if 'Topic' in c]])
-    del dat
+def create_stm_encoding(vector_size, input, language):
+    subprocess.call("Rscript ./external/stm.R {} {} {}".format(input, vector_size, language), shell=True)
+    X = np.loadtxt('./external/raw_embeddings/tmp_{}_EMBEDDING_{}.csv'.format('STM', vector_size))
     return X, None
 
 
@@ -30,8 +29,13 @@ def create_ctm_encoding(vector_size, input, language):
 
 
 # PTM
-def load_ptm_encoding():
-    X = np.loadtxt("../Data Russie/encodings/RADIO_PTM_ENCODING_1000.txt")
+def load_ptm_encoding(vector_size):
+    filename = './external/raw_embeddings/tmp_{}_EMBEDDING_{}.csv'.format('PTM', vector_size)
+    try:
+        X = np.loadtxt("../Data Russie/encodings/RADIO_PTM_ENCODING_1000.txt")
+    except OSError:
+        print('No such file: {}'.format(filename))
+        sys.exit(1)
     return X, None
 
 
@@ -118,13 +122,13 @@ def construct_corpus(corpus, dictionary, method='BOW', vector_size=200, input=No
         X, mod = create_dtm_encoding(corpus, vector_size, dictionary, slices)
     elif method == 'STM':
         print("STM is going to run a R subprocess to construct embedding...")
-        X, mod = load_stm_encoding()
+        X, mod = create_stm_encoding(vector_size, input, language)
     elif method == 'CTM':
         print("CTM is going to run a R subprocess to construct embedding...")
         X, mod = create_ctm_encoding(vector_size, input, language)
     elif method == 'PTM':
         print("PTM loads pre-computed embeddings using https://github.com/qiang2100/STTM")
-        X, mod = load_ptm_encoding()
+        X, mod = load_ptm_encoding(vector_size)
     # Default: Bag of Words
     else:
         X, mod = create_bow_encoding(corpus, vector_size, dictionary)

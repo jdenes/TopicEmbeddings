@@ -18,11 +18,11 @@ from interpretation import *
 if __name__ == '__main__':
     freeze_support()
 
-    INPUT = './datasets/dataset_ina_radio.csv'
+    INPUT = './datasets/example.csv'
     PROJECT = 'INA'
     EMBEDDING = 'CTM'
     ALGO = 'LOGIT'
-    K = 2
+    K = 5
     PREPROCESS = True
     MODE = 'all'
     SAMPLING = 'OVER'
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
                 else:
                     print('Cannot provide interpretation for embeddings other than BOW and LDA for now.')
-                    sys.exit(1)
+                    sys.exit(0)
         else:
             print("Cannot provide interpretation for classifier other than logistic regression (LOGIT).")
             sys.exit(1)

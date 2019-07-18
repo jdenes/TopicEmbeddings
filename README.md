@@ -1,7 +1,7 @@
 # Topic Embeddings Framework
 A code to create and test document embeddings using topic models. Based on forthcoming paper (maybe): "Document Embedding Using Topic Models", a Master Thesis at Sorbonne Université.
 
-Topic Embeddings Framework is a [Python 3](https://www.python.org/downloads/) open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag of word or doc2vec.
+Topic Embeddings Framework is a Python 3 open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag of word or doc2vec.
 
 **Author :** [Julien Denes](https://github.com/jdenes/), Sciences Po médialab.
 
@@ -11,26 +11,37 @@ Topic Embeddings Framework is a [Python 3](https://www.python.org/downloads/) op
 
 ### Included
 
-* List of the
-* algorithms implemented
-* include references
-* DTM: input has to be a .csv file with a column called `year` to perform time slicing (see DTM architecture for better understanding). Also the file needs to be sorted according to this column.
+Some embeddings using topic models are directly 
+
+**References:**
+* Bag of Words (abbreviated BOW) using gensim
+* doc2vec (DOC2VEC) using gensim
+* Word Embedding Agregation (POOL) using gensim's word2vec and mean as pooling function
+* Bag of Random  Embedding  Projection (BOREP)
+* Latent Semantic Analysis (LSA) using gensim
+
+**Topic embeddings:**
+* Latent Dirichlet Allocation (LDA) using gensim
+* Hierarchical Dirichlet Process (HDP)
+* Dynamic Topic Model (DTM) using gensim's wrapper
+* Structural Topic Model (STM) using R package stm
+* Correlated Topic Model (CTM) using R package topicmodels
 
 ### Supported
 
-* Oopsi not all of the are implemented
-* Here are some we currently support but need precomputation
-* The list
-* See [Usage](#Usage) to get how to use both
+Unfortunatly, not all topic models are implented in Python or R. We support Pseudo-Document-Based Topic Model (PTM), which can be computed using using [STTM](https://github.com/qiang2100/STTM). Once you've done that, simply import the topic proportion file into `/external/` and name it `raw_embeddings/tmp_PTM_EMBEDDING_K.csv` where $K$ if your vector size.
 
 ## Requirements
 
-* python 3.6+ with packages in requirement.txt
-* To be able to run R scripts: R
+* [Python 3.6+](https://www.python.org/downloads/) with packages in `requirements.txt`. To install them, simply run `pip install -r requirements.txt`.
+* If you intend to use STM or CTM, you will also need to have [R](https://www.r-project.org/) installed. Required packages will install automatically.
+* Please make sure that both `python` and `Rscript` can be run in your terminal no matter the directory you're in. If you're using Windows, consider adding them to your `PATH` environment variable ([see an example](https://datatofish.com/add-python-to-windows-path/)).
 
 ## Input data
 
-You can use either your data or 20News in order to perform classification and assess performances. Own data format must include:
+To possible data inputs are available for now:
+* You can use the [20 Newsgroups dataset](http://qwone.com/~jason/20Newsgroups/), a popular standard data set for experiments in NLP,
+* Or you can use your own data. If you wish to do so, you need to provide a `.csv` file with two mandatory columns: one called `text` containing your text, the other called `label` containing the document's label in numerical format. A column called `year` can be optionally included to be used in DTM or STM, in which case your data **must** be sorted according to this column. All other columns will be ignored, except by STM. An example file is provided: `datasets/example.csv`.
 
 **File format of input corpus:**  Similar to file `corpus.txt` in the `data` folder, we assume that each line in the input corpus represents a document. Here, a document is a sequence of words/tokens separated by white space characters. The users should preprocess the input corpus before training the short text topic models, for example: down-casing, removing non-alphabetic characters and stop-words, removing words shorter than 3 characters and words appearing less than a certain times. Otherwise you may also implement a .csv ?
 

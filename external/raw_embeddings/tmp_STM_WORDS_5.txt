@@ -1,0 +1,25 @@
+Topic 1 Top Words:
+ 	 Highest Prob: musiqu, quil, plage, cest, parl, expliqu, fait, plus, dit, dun 
+ 	 FREX: plage, cirqu, charli, intervenant, clown, signoret, montand, hebdo, indiqu, poch 
+ 	 Lift: abîmé, allum, amputé, and, apparit, athé, banalité, bern, blouson, bojan 
+ 	 Score: plage, itw, intervenant, musiqu, hebdo, signoret, cirqu, charli, biard, clown 
+Topic 2 Top Words:
+ 	 Highest Prob: franc, interview, pierr, disqu, léquip, pari, musiqu, match, françoi, plus 
+ 	 FREX: léquip, match, olympiqu, green, chostakovitch, equip, dorian, morgan, quatuor, handbal 
+ 	 Lift: boycott, contrebass, duthu, esparza, fabien, ferreira, haydn, heimermann, ion, judoka 
+ 	 Score: dorian, léquip, equip, brisboi, nigeria, green, match, handbal, basket, kaufmann 
+Topic 3 Top Words:
+ 	 Highest Prob: film, jean, russ, théâtre, livr, cinéma, propo, extrait, comment, entretien 
+ 	 FREX: lexposit, langloi, cinémathèqu, ballet, chaplin, dugain, chagal, tableaux, duchateau, canetti 
+ 	 Lift: pad, abdellatif, accouch, adaptateur, adoptif, affairé, agafonov, aléatoir, alexandrov, alpha 
+ 	 Score: cinémathèqu, dugain, chaplin, langloi, pic, gac, gide, ballet, peintr, théâtre 
+Topic 4 Top Words:
+ 	 Highest Prob: archiv, évoqu, parti, livr, guerr, parl, extrait, communist, lectur, dun 
+ 	 FREX: prevert, mandelstam, dastier, juiv, soljenitsyn, troyat, aron, wiesel, pan, churchil 
+ 	 Lift: anarchist, arendt, argument, aubrac, balandi, beauvoir, bernheim, birnbaum, blog, broue 
+ 	 Score: prevert, mandelstam, dastier, communist, pan, wiesel, bob, troyat, camus, poèm 
+Topic 5 Top Words:
+ 	 Highest Prob: itw, franc, pay, dun, russi, président, politiqu, dune, chroniqu, entr 
+ 	 FREX: poutin, simul, démocrati, léconomi, garcin, simult, corrupt, slama, présidentiell, vote 
+ 	 Lift: duhamel, garcin, géopolitiqu, lirak, profit, -til, abattu, abba, abderrahman, accueill 
+ 	 Score: itw, simul, poutin, sarkozi, économiqu, irakien, chypr, trad, garcin, élection 

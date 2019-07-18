@@ -1,8 +1,18 @@
-library(stm)
-library(tm)
-library(topicmodels)
-library(data.table)
+# A function to check required packages and install them 
+loadPackages <- function() {
+	packages <- c("data.table", "stm", "tm", "topicmodels")
+    pkgcheck <- match( packages, utils::installed.packages()[,1] )
+    pkgtoinstall <- packages[is.na(pkgcheck)]
+    if (length(pkgtoinstall) > 0) {
+		print("Installing required R packages...")
+		utils::install.packages(pkgtoinstall, repos="https://cran.univ-paris1.fr/")
+	}
+    for (pkg in packages) {
+		suppressPackageStartupMessages(library(pkg, character.only=TRUE, quietly=TRUE))
+	}
+}
 
+# A text processing custom function
 processText <- function(documents,
                         lowercase=TRUE, removestopwords=TRUE, removenumbers=TRUE, removepunctuation=TRUE, stem=TRUE, 
                         wordLengths=c(3,Inf),sparselevel=1, language="french",

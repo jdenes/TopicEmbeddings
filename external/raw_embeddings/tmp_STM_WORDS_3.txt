@@ -1,0 +1,15 @@
+Topic 1 Top Words:
+ 	 Highest Prob: pierr, jean, franc, entretien, théâtre, propo, russ, musiqu, interview, pari 
+ 	 FREX: roger, disqu, match, gide, pic, compositeur, jeux, olympiqu, ballet, piano 
+ 	 Lift: adrien, bondi, bretonn, chartier, garnier, huitièm, kamoun, lentrain, louisett, lutopi 
+ 	 Score: match, prevert, pic, gide, mandelstam, dorian, equip, disqu, olympiqu, handbal 
+Topic 2 Top Words:
+ 	 Highest Prob: quil, livr, parl, musiqu, expliqu, film, dun, plage, extrait, cest 
+ 	 FREX: plage, communist, chose, bruit, récit, interven, dugain, littérair, cétait, plusieur 
+ 	 Lift: abîmé, academi, accusé, affect, afro-américain, allum, amo, amputé, and, antonio 
+ 	 Score: plage, dugain, musiqu, interven, gac, signoret, intervenant, roumain, chose, fond 
+Topic 3 Top Words:
+ 	 Highest Prob: itw, franc, politiqu, russi, dun, pay, président, entr, russ, chroniqu 
+ 	 FREX: économiqu, poutin, langloi, cinémathèqu, loi, léconomi, sarkozi, green, député, internationaux 
+ 	 Lift: churchil, duhamel, géopolitiqu, internationaux, lirak, profit, sarajevo, sinterrog, terrorist, -delà 
+ 	 Score: itw, langloi, économiqu, garcin, green, nucléair, simul, kravetz, poutin, cinémathèqu 
