@@ -1,9 +1,6 @@
-#!/usr/bin/env python
 # coding: utf-8
 
-import os
 import pandas as pd
-import numpy as np
 
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import SMOTE
@@ -18,9 +15,10 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-from utils import *
 
+# SET OF FUNCTIONS TO CREATE CLASSIFICATION MODELS (Step 2) #
 
+# Balance data set in case of imbalanced learning.
 def balance_split(X, Y, sampling='UNDER', test_size=0.25):
     if sampling == 'OVER':
         X_s, Y_s = SMOTE(ratio='minority').fit_sample(X, Y)
@@ -31,6 +29,7 @@ def balance_split(X, Y, sampling='UNDER', test_size=0.25):
     return train_test_split(X_s, Y_s, test_size=test_size)
 
 
+# Train classifier given the model desired.
 def trained_model(model, X, Y):
     if model == 'NBAYES':
         return GaussianNB().fit(X, Y)
@@ -48,6 +47,7 @@ def trained_model(model, X, Y):
         return LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=1000).fit(X, Y)
 
 
+# Computer performance metrics of the classifier.
 def evaluate_model(model, X_train, X_test, Y_train, Y_test):
     Y_pred = model.predict(X_test)
     Y_pre = model.predict(X_train)

@@ -1,14 +1,11 @@
-#!/usr/bin/env python
 # coding: utf-8
 
-import os
 import pandas as pd
-import numpy as np
-import joblib
-
-from utils import *
 
 
+# SET OF FUNCTIONS TO PROVIDE INTERPRETATION (Step 3) #
+
+# Given the importance of each dimension, outputs the words corresponding to most and less significant ones.
 def interpret_bow(dictionary, imp):
     ind = [imp[i] for i in range(20)]
     x, y = [], []
@@ -22,6 +19,7 @@ def interpret_bow(dictionary, imp):
     return res
 
 
+# Given the importance of each dimension (topics), outputs signif. words corresponding to most/less significant ones.
 def interpret_lda(dictionary, mod, imp, coef):
     ind = [imp[i] for i in range(5)]
     top1 = pd.DataFrame([[dictionary[x[0]] for x in mod.get_topic_terms(x, topn=10)] for x in ind]).T

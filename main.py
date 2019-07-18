@@ -1,18 +1,17 @@
-#!/usr/bin/env python
 # coding: utf-8
 
 import sys
 import os
-import pandas as pd
 import numpy as np
 import joblib
 from multiprocessing import freeze_support
 from gensim.corpora.dictionary import Dictionary
+from gensim.models import LdaMulticore
 
-from utils import *
-from encoding import *
-from classification import *
-from interpretation import *
+from utils import load_corpus, load_labels, load_embeddings, load_model, read_options
+from encoding import construct_corpus
+from classification import balance_split, trained_model, evaluate_model
+from interpretation import interpret_bow, interpret_lda
 
 
 if __name__ == '__main__':
@@ -61,7 +60,8 @@ if __name__ == '__main__':
         print("Creating embedding using {} with size {}...".format(EMBEDDING, K))
         dictionary = Dictionary(corpus)
         dictionary.filter_extremes(no_below=2, no_above=0.5)
-        X, mod = construct_corpus(corpus, dictionary, method=EMBEDDING, vector_size=K, input=INPUT, slices=slices, language=LANGUAGE)
+        X, mod = construct_corpus(corpus, dictionary, method=EMBEDDING, vector_size=K,
+                                  datafile=INPUT, slices=slices, language=LANGUAGE)
 
         filename = './results/{}/embeddings/{}_embedding_{}.csv'.format(PROJECT, EMBEDDING, K)
         np.savetxt(filename, X, delimiter=",")
@@ -114,7 +114,8 @@ if __name__ == '__main__':
                 if EMBEDDING == 'BOW':
                     dictionary.filter_extremes(keep_n=K)
                     interp = interpret_bow(dictionary, imp)
-                    filename = './results/{}/interpretation/{}_interpretation_{}_class_{}.csv'.format(PROJECT, EMBEDDING, K, i)
+                    filename = './results/{}/interpretation/{}_interpretation_{}_class_{}.csv'.\
+                        format(PROJECT, EMBEDDING, K, i)
                     interp.to_csv(filename, encoding='utf-8')
 
                 # Interpretation LDA
@@ -122,7 +123,8 @@ if __name__ == '__main__':
                     filename = './results/{}/models/{}_model_{}.model'.format(PROJECT, EMBEDDING, K)
                     mod = LdaMulticore.load(filename)
                     interp = interpret_lda(dictionary, mod, imp, coef)
-                    filename = './results/{}/interpretation/{}_interpretation_{}_class_{}.csv'.format(PROJECT, EMBEDDING, K, i)
+                    filename = './results/{}/interpretation/{}_interpretation_{}_class_{}.csv'.\
+                        format(PROJECT, EMBEDDING, K, i)
                     interp.to_csv(filename, encoding='utf-8')
 
                 else:

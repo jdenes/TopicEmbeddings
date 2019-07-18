@@ -1,8 +1,8 @@
+# coding: utf-8
+
 import sys
 import os
-import re
 import time
-import unicodedata
 import joblib
 import argparse
 import pandas as pd
@@ -14,53 +14,9 @@ from gensim.parsing.preprocessing import preprocess_string, remove_stopwords
 from sklearn.datasets import fetch_20newsgroups
 
 
-# STRING PRE-PROCESSING #
+# NLP TOOLS #
 
-def no_paren(string):
-    if not pd.isnull(string):
-        res = re.sub(r"\s?\(.*\)\)?", '', string)
-        return re.sub(r'\[.*\]\s?', '', res)
-
-
-def normalize(string, rm_space=True, rm_punct=True, lower=True):
-    if pd.isnull(string):
-        return None
-    s = unicodedata.normalize('NFKD', string).encode('ascii', 'ignore').decode("utf-8")
-    s = re.compile('[^a-zA-Z\s\.\,\:\;]').sub('', s)
-    if rm_space:
-        s = re.compile('[^a-zA-Z\.\,\:\;]').sub('', s)
-    if rm_punct:
-        s = re.compile('[^a-zA-Z\s]').sub('', s)
-    if lower:
-        s = s.lower()
-    s = re.sub(' +', ' ', s).lstrip().rstrip()
-    return s
-
-
-def listate(l):
-    if not isinstance(l, (list,)):
-        return None
-    res = []
-    for i in range(0, len(l), 2):
-        res.append((l[i], l[i + 1]))
-    return res
-
-
-def drop_journa(l):
-    if not isinstance(l, (list,)):
-        return None
-    keep = []
-    for g in l:
-        if g[0] in ['PAR']:
-            keep.append(g[1])
-    if len(keep) > 0:
-        return keep
-    else:
-        return None
-
-
-# NLP #
-
+# A custom stopwords remover based on gensim's but allowing non-english languages + special stopwords
 def my_remove_stopwords(s, language):
     if language == 'english':
         return remove_stopwords(s)
@@ -78,51 +34,52 @@ def my_remove_stopwords(s, language):
     return " ".join(w for w in s.split() if w.lower() not in stopwords)
 
 
+# From a sparse transformed corpus of gensim, i.e. [(0, 12), (1, 15)], return matrix format: [12, 15].
 def transcorp2matrix(transcorp, bow_corpus, vector_size):
-    X = np.zeros((len(bow_corpus), vector_size))
+    x = np.zeros((len(bow_corpus), vector_size))
     for i, doc in enumerate(transcorp):
         for topic in doc:
-            X[i][topic[0]] = topic[1]
-    return X
+            x[i][topic[0]] = topic[1]
+    return x
 
 
-# DATA IMPORT #
+# DATA IMPORT TOOLS #
 
-# Import data
-def load_corpus(INPUT, EMBEDDING, PREPROCESS=True, LANGUAGE='english'):
+# Load user's .csv file data set or 20News data set
+def load_corpus(input, embedding, preprocess=True, language='english'):
     corpus, slices, data = None, None, None
-    if INPUT == '20News':
+    if input == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))  # , 'quotes'
         res = pd.Series(source.data, name='res')
-        if PREPROCESS:
+        if preprocess:
             print("Pre-processing text...")
             corpus = [preprocess_string(remove_stopwords(x)) for x in res]
         else:
             corpus = [x.split() for x in res]
-    elif not os.path.exists(INPUT):
-        print("No such file: '{}'".format(INPUT))
+    elif not os.path.exists(input):
+        print("No such file: '{}'".format(input))
         sys.exit(1)
-    elif not INPUT[-4:] == '.csv':
+    elif not input[-4:] == '.csv':
         print("Currently supported inputs: '20News' or .csv file containing a column called 'text'.")
         sys.exit(1)
     else:
-        data = pd.read_csv(INPUT, encoding='utf-8')
+        data = pd.read_csv(input, encoding='utf-8')
         if 'text' not in data.columns:
             print("Column containing text must be called 'text'. Please check your input format.")
             sys.exit(1)
-        if PREPROCESS:
+        if preprocess:
             print("Pre-processing text...")
-            corpus = [preprocess_string(my_remove_stopwords(x, LANGUAGE)) for x in data['text']]
+            corpus = [preprocess_string(my_remove_stopwords(x, language)) for x in data['text']]
         else:
             corpus = [x.split() for x in data['text'].tolist()]
         if 'toremove' in data.columns:
-            rm = [preprocess_string(my_remove_stopwords(' '.join(x), LANGUAGE)) for x in data['toremove'].apply(eval)]
+            rm = [preprocess_string(my_remove_stopwords(' '.join(x), language)) for x in data['toremove'].apply(eval)]
             corpus = [[y for y in x if y not in rm[i]] for i, x in enumerate(corpus)]
-    if EMBEDDING == 'DTM':
-        if INPUT == '20News':
+    if embedding == 'DTM':
+        if input == '20News':
             print("DTM cannot be used with '20News' input as time information is not provided.")
             sys.exit(1)
-        elif INPUT[-4:] == '.csv':
+        elif input[-4:] == '.csv':
             if 'year' in data.columns:
                 slices = data['year'].value_counts().sort_index().tolist()
             else:
@@ -136,30 +93,30 @@ def load_corpus(INPUT, EMBEDDING, PREPROCESS=True, LANGUAGE='english'):
     return corpus, slices
 
 
-# Loading labels
-def load_labels(INPUT):
-    Y = None
-    if INPUT == '20News':
+# Loading labels from user's file or 20News
+def load_labels(input):
+    if input == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))
-        Y = pd.Series(source.target, name='label')
-    elif not os.path.exists(INPUT):
-        print("No such file: '{}'".format(INPUT))
+        y = pd.Series(source.target, name='label')
+    elif not os.path.exists(input):
+        print("No such file: '{}'".format(input))
         sys.exit(1)
-    elif not INPUT[-4:] == '.csv':
+    elif not input[-4:] == '.csv':
         print("Currently supported inputs: '20News' or .csv file containing a column called 'label'.")
         sys.exit(1)
     else:
-        data = pd.read_csv(INPUT, encoding='utf-8')
+        data = pd.read_csv(input, encoding='utf-8')
         if 'label' not in data.columns:
             print("Column called 'label' is required to perform classification task.")
             sys.exit(1)
         else:
-            Y = data['label']
-    return Y
+            y = data['label']
+    return y
 
 
-def load_embeddings(PROJECT, EMBEDDING, K):
-    filename = './results/{}/embeddings/{}_embedding_{}.csv'.format(PROJECT, EMBEDDING, K)
+# Loading embeddings computed in Step 1
+def load_embeddings(project, embedding, k):
+    filename = './results/{}/embeddings/{}_embedding_{}.csv'.format(project, embedding, k)
     try:
         res = np.genfromtxt(filename, delimiter=',')
         return res
@@ -169,8 +126,9 @@ Try to use the same command with '-mode encode' first (instead of '-mode classif
         sys.exit(1)
 
 
-def load_model(PROJECT, EMBEDDING, ALGO, K):
-    filename = './results/{}/classifiers/{}_{}_{}.joblib'.format(PROJECT, EMBEDDING, ALGO, K)
+# Loading models used in Step 1
+def load_model(project, embedding, algo, k):
+    filename = './results/{}/classifiers/{}_{}_{}.joblib'.format(project, embedding, algo, k)
     try:
         model = joblib.load(filename)
         return model
@@ -180,7 +138,7 @@ Try to use the same command with '-mode classify' first (instead of '-mode inter
         sys.exit(1)
 
 
-# Parser to get user's inputs
+# A parser to get user's inputs
 def read_options():
     parser = argparse.ArgumentParser()
     parser.add_argument('-mode',
