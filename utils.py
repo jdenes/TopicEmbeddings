@@ -20,16 +20,18 @@ from sklearn.datasets import fetch_20newsgroups
 def my_remove_stopwords(s, language):
     if language == 'english':
         return remove_stopwords(s)
-    filepath = "./datasets/stopwords-{}.txt".format(language)
-    if not os.path.exists(filepath):
+    path = "./datasets/stopwords-{}.txt".format(language)
+    if not os.path.exists(path):
         print("{} is not a built-in language yet. Please provide '{}' file containing appropriate stopwords \
-(one word by line, lower case).".format(language.capitalize(), filepath))
+(one word by line, lower case).".format(language.capitalize(), path))
         sys.exit(1)
-    with open(filepath, encoding='utf-8') as f:
+    with open(path, encoding='utf-8') as f:
         stopwords = f.read().splitlines()
-    with open("./datasets/special-stopwords.txt", encoding='utf-8') as f:
-        specials = f.read().splitlines()
-    stopwords = set(stopwords + specials)
+    specials = "./datasets/special-stopwords.txt"
+    if os.path.exists(specials):
+        with open(specials, encoding='utf-8') as f:
+            specials = f.read().splitlines()
+        stopwords = set(stopwords + specials)
     s = utils.to_unicode(s)
     return " ".join(w for w in s.split() if w.lower() not in stopwords)
 
@@ -46,9 +48,9 @@ def transcorp2matrix(transcorp, bow_corpus, vector_size):
 # DATA IMPORT TOOLS #
 
 # Load user's .csv file data set or 20News data set
-def load_corpus(input, embedding, preprocess=True, language='english'):
+def load_corpus(datafile, embedding, preprocess=True, language='english'):
     corpus, slices, data = None, None, None
-    if input == '20News':
+    if datafile == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))  # , 'quotes'
         res = pd.Series(source.data, name='res')
         if preprocess:
@@ -56,16 +58,16 @@ def load_corpus(input, embedding, preprocess=True, language='english'):
             corpus = [preprocess_string(remove_stopwords(x)) for x in res]
         else:
             corpus = [x.split() for x in res]
-    elif not os.path.exists(input):
-        print("No such file: '{}'".format(input))
+    elif not os.path.exists(datafile):
+        print("No such file: '{}'".format(datafile))
         sys.exit(1)
-    elif not input[-4:] == '.csv':
+    elif not datafile[-4:] == '.csv':
         print("Currently supported inputs: '20News' or .csv file containing a column called 'text'.")
         sys.exit(1)
     else:
-        data = pd.read_csv(input, encoding='utf-8')
+        data = pd.read_csv(datafile, encoding='utf-8')
         if 'text' not in data.columns:
-            print("Column containing text must be called 'text'. Please check your input format.")
+            print("Column containing text must be called 'text'. Please check your datafile format.")
             sys.exit(1)
         if preprocess:
             print("Pre-processing text...")
@@ -76,36 +78,36 @@ def load_corpus(input, embedding, preprocess=True, language='english'):
             rm = [preprocess_string(my_remove_stopwords(' '.join(x), language)) for x in data['toremove'].apply(eval)]
             corpus = [[y for y in x if y not in rm[i]] for i, x in enumerate(corpus)]
     if embedding == 'DTM':
-        if input == '20News':
-            print("DTM cannot be used with '20News' input as time information is not provided.")
+        if datafile == '20News':
+            print("DTM cannot be used with '20News' datafile as time information is not provided.")
             sys.exit(1)
-        elif input[-4:] == '.csv':
+        elif datafile[-4:] == '.csv':
             if 'year' in data.columns:
                 slices = data['year'].value_counts().sort_index().tolist()
             else:
-                print("DTM cannot be used with this input as time information is required.\
+                print("DTM cannot be used with this datafile as time information is required.\
                         Try .csv file with 'year' column.")
                 sys.exit(1)
         else:
-            print("DTM cannot be used with this input as time information is required.\
+            print("DTM cannot be used with this datafile as time information is required.\
                     Try .csv file with 'year' column.")
             sys.exit(1)
     return corpus, slices
 
 
 # Loading labels from user's file or 20News
-def load_labels(input):
-    if input == '20News':
+def load_labels(datafile):
+    if datafile == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))
         y = pd.Series(source.target, name='label')
-    elif not os.path.exists(input):
-        print("No such file: '{}'".format(input))
+    elif not os.path.exists(datafile):
+        print("No such file: '{}'".format(datafile))
         sys.exit(1)
-    elif not input[-4:] == '.csv':
+    elif not datafile[-4:] == '.csv':
         print("Currently supported inputs: '20News' or .csv file containing a column called 'label'.")
         sys.exit(1)
     else:
-        data = pd.read_csv(input, encoding='utf-8')
+        data = pd.read_csv(datafile, encoding='utf-8')
         if 'label' not in data.columns:
             print("Column called 'label' is required to perform classification task.")
             sys.exit(1)

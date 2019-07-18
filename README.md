@@ -27,6 +27,7 @@ Unfortunatly, not all topic models have simple implementations in Python or R. W
 
 * [Python 3.6+](https://www.python.org/downloads/) with packages listed in `requirements.txt`. To install them, simply run `pip install -r requirements.txt`.
 * If you intend to use STM or CTM, you will also need to have [R](https://www.r-project.org/) installed. Required packages will install automatically.
+* If you intend to use DTM, you need to download the binary file corresponding to your OS from [this repository](https://github.com/magsilva/dtm/tree/master/bin) and place it into `./external/dtm_bin/`.
 * Please make sure that both `python` and `Rscript` commands can be run in your terminal no matter the directory you're in. If you're using Windows, consider adding them to your `PATH` environment variable ([see an example](https://datatofish.com/add-python-to-windows-path/)).
 
 ## Input data

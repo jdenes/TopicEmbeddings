@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import os
 import sys
 import subprocess
 import numpy as np
@@ -95,9 +96,15 @@ def create_bow_encoding(corpus, vector_size, dictionary):
     return corpus2dense(corpus_tfidf, num_terms=vector_size).T, mod
 
 
-# Create DTM embedding using Blei's original binary. Change to suit your specs.
+# Create DTM embedding using Blei's original binary.
 def create_dtm_encoding(corpus, vector_size, dictionary, slices):
-    mod_path = "./external/dtm_bin/dtm-win64.exe"
+    path = './external/dtm_bin/'
+    link = 'https://github.com/magsilva/dtm/tree/master/bin'
+    content = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and 'dtm' in f]
+    if len(content) != 1:
+        print("Please place the appropriate binary file (and only this one) from {} into '{}'.".format(path, link))
+        sys.exit(1)
+    mod_path = path + content[0]
     dictionary.filter_extremes(keep_n=5000)
     bow_corpus = [dictionary.doc2bow(x) for x in corpus]
     mod = DtmModel(mod_path, corpus=bow_corpus, id2word=dictionary, time_slices=slices, num_topics=vector_size)
