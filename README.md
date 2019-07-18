@@ -32,7 +32,7 @@ Unfortunatly, not all topic models have simple implementations in Python or R. W
 ## Input data
 
 Two possible data inputs are available for now:
-* **[20 Newsgroups data set](http://qwone.com/~jason/20Newsgroups/)**, a popular standard data set for experiments in NLP. Data will be automatically imported.
+* **20 Newsgroups data set**, a [popular standard data set](http://qwone.com/~jason/20Newsgroups/) for experiments in NLP. Data will be automatically imported.
 
 * **Your own data.** If you wish to do so, you need to provide a `.csv` file with two mandatory columns: one called `text` containing your text, the other called `labels` containing the document's label in numerical format. A column called `year` can be optionally included to be used in DTM or STM, in which case your data must be sorted according to this column. All other columns will be ignored, except by STM. An example file is provided: `datasets/example.csv`.
 
@@ -55,7 +55,7 @@ where parameters in `[ ]` are optional. In detail, each parameter corresponds to
 
 `-input`: specify the path to your custom input file, or `20News` to use 20 Newsgroups.
 
-`-embed <String>`: type of embedding to use. Must be one of: `BOW, DOC2VEC, POOL, BOREP, LSA, LDA, HDP, DTM, STM, CTM, PTM`.
+`-embed <String>`: embedding to use. Must be one of: `BOW, DOC2VEC, POOL, BOREP, LSA, LDA, HDP, DTM, STM, CTM, PTM`.
 
 `-project`: name of your project to find the results later. Default is current day and time.
 
@@ -89,7 +89,7 @@ where parameters in `[ ]` are optional. Parameters `-input`, `-embed`, `-project
 
 `-algo <String>`: classifier to use. Must be one of: `LOGIT, NBAYES, ADAB, DTREE, KNN, ANN, SVM`. Default is `LOGIT`.
 
-`-samp <String>`: sampling to use on data to prevent imbalanced data sets. Must be one of `OVER, UNDER, NONE`. Default is `NONE`.
+`-samp <String>`: sampling to use to prevent imbalanced data sets. Must be one of `OVER, UNDER, NONE`. Default is `NONE`.
 
 **Examples:**
 
