@@ -1,6 +1,4 @@
-*.json
-*.csv
-*.pdf
-*.png
 *.model
+*.joblib
+*.npy
 *.exe

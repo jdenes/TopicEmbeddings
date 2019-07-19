@@ -23,16 +23,6 @@ if __name__ == '__main__':
     PREPROCESS, LANGUAGE = param.prep, param.langu
     ALGO, SAMPLING = param.algo, param.samp
 
-    # INPUT = './datasets/example.csv'
-    # PROJECT = 'INA'
-    # EMBEDDING = 'CTM'
-    # ALGO = 'LOGIT'
-    # K = 5
-    # PREPROCESS = True
-    # MODE = 'all'
-    # SAMPLING = 'OVER'
-    # LANGUAGE = 'french'
-
     # STEP 1: CREATE EMBEDDINGS
     if MODE == 'all' or MODE == 'encode':
 
