@@ -19,7 +19,7 @@ rownames(data) = 1:nrow(data)
 ###################### CORRELATED TOPIC MODEL ######################
 
 corpus = processText(data$text, language=language)
-model1 = CTM(x=corpus, k=K, method="VEM", control=list(verbose=1, seed=123, em=list(iter.max=25)))
+model1 = CTM(x=corpus, k=K, method="VEM", control=list(verbose=1, seed=123, em=list(iter.max=100)))
 
 proba1 = as.data.frame(model1@gamma)
 data = data[rownames(proba1),]
