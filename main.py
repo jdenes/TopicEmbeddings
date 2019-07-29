@@ -62,13 +62,13 @@ if __name__ == '__main__':
 
     # STEP 2: RUN CLASSIFICATION TASK
     if MODE == 'all' or MODE == 'classify':
-
-        print('Loading labels...')
-        Y = load_labels(INPUT)
-
+        
         print('Loading embedding...')
         X = load_embeddings(PROJECT, EMBEDDING, K)
-
+        
+        print('Loading labels...')
+        Y = load_labels(INPUT, EMBEDDING, K)
+        
         print('Splitting into test and train, sampling...')
         X_train, X_test, Y_train, Y_test = balance_split(X, Y, sampling=SAMPLING, test_size=0.15)
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
         print('Computing performance metrics...')
         perf = evaluate_model(model, X_train, X_test, Y_train, Y_test)
-        filename = './results/{}/performances/{}_perf_{}.csv'.format(PROJECT, EMBEDDING, K)
+        filename = './results/{}/performances/{}_{}_{}.csv'.format(PROJECT, EMBEDDING, ALGO, K)
         perf.to_csv(filename)
 
         print('Classification done!')

@@ -96,10 +96,12 @@ def load_corpus(datafile, embedding, preprocess=True, language='english'):
 
 
 # Loading labels from user's file or 20News
-def load_labels(datafile):
+def load_labels(datafile, embedding, vector_size):
     if datafile == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))
         y = pd.Series(source.target, name='label')
+    elif embedding == 'STM' or embedding == 'CTM':
+        y = np.loadtxt('./external/raw_embeddings/tmp_{}_LABELS_{}.csv'.format(embedding, vector_size))
     elif not os.path.exists(datafile):
         print("No such file: '{}'".format(datafile))
         sys.exit(1)
