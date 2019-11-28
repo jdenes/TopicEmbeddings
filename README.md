@@ -48,7 +48,7 @@ The first steps consists in getting a vector representation of each document in 
 
 **To produce it, simply run this command in your terminal:**
 
-	$ python main.py –mode encode -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>]
+	$ python main.py -mode encode -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>]
 
 where parameters in `[ ]` are optional. In detail, each parameter corresponds to:
 
@@ -68,9 +68,9 @@ where parameters in `[ ]` are optional. In detail, each parameter corresponds to
 
 **Examples:**
 
-	$ python main.py –mode encode -input datasets/example.csv -embed LDA -prep True -langu french
+    $ python main.py -mode encode -input datasets/example.csv -embed LDA -prep True -langu french
     
-    $ python main.py –mode encode -input 20News -embed STM -project 20NewsTest -k 500
+    $ python main.py -mode encode -input 20News -embed STM -project 20NewsTest -k 500
 
 Once the code is done running, you'll see a new folder in `results` having your project's name. Its subfolder `embeddings` contains the matrix of vector representation of your corpus, with one row per document (if none has been dropped) and k columns. In subfolder `models`, we store the models that were used to produce those embeddings. **Notice that you can (and should!) produce several embeddings for your data set and compare them in Step 2!** They will be all be stored in your project's folder.
 
@@ -82,7 +82,7 @@ This step uses the embedding in the classification task of your choice according
 
 **To run a classification, simply use this command in your terminal:**
 
-	$ python main.py –mode classify -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-algo <String>] [-samp <String>]
+	$ python main.py -mode classify -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-algo <String>] [-samp <String>]
 
 where parameters in `[ ]` are optional. Parameters `-input`, `-embed`, `-project` and `-k` should be the same as in Step 1. The new parameters corresponds to:
 
@@ -94,9 +94,9 @@ where parameters in `[ ]` are optional. Parameters `-input`, `-embed`, `-project
 
 **Examples:**
 
-	$ python main.py –mode classify -input datasets/example.csv -embed LDA -algo SVM -samp OVER
+    $ python main.py -mode classify -input datasets/example.csv -embed LDA -algo SVM -samp OVER
     
-    $ python main.py –mode classify -input 20News -embed STM -project 20NewsTest -k 500
+    $ python main.py -mode classify -input 20News -embed STM -project 20NewsTest -k 500
     
 This step produces new files in your project's folder, under `performances`, with various performence metrics for your embedding: accuracy, precision, recall, and F1-score. Some files are also created under `classifiers` to store the trained classifier. At this point, you are able to assess if topic embeddings perform well on your data set and task!
 
@@ -106,15 +106,15 @@ You can know use the power of interpretability of topic models to get insights o
 
 **To get the interpretation, simply run this command in your terminal:**
 
-	$ python main.py –mode interpret -input <path/to/input> -embed <BOW or LDA> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>] [-algo LOGIT] [-samp <String>]
+	$ python main.py -mode interpret -input <path/to/input> -embed <BOW or LDA> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>] [-algo LOGIT] [-samp <String>]
 
-Note that all parameters `-input`, `-embed`, `-project`, `-k`, `-prep`, `-langu`, `-algo`, and `-samp` should be the same as in Step 1 or 2. New parameter value `–mode interpret` specifies that you are performing the interpretation.
+Note that all parameters `-input`, `-embed`, `-project`, `-k`, `-prep`, `-langu`, `-algo`, and `-samp` should be the same as in Step 1 or 2. New parameter value `-mode interpret` specifies that you are performing the interpretation.
 
 ### All-at-once command
 
 Now that you understand all 3 steps of the process, we shall reveal the command to run all three steps in a row:
 
-	$ python main.py –mode all -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>] [-algo <String>] [-samp <String>]
+	$ python main.py -mode all -input <path/to/input> -embed <String> [-project <String>] [-k <int>] [-prep <bool>] [-langu <String>] [-algo <String>] [-samp <String>]
 
 ## Concluding remark
 
