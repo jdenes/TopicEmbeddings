@@ -50,6 +50,7 @@ def transcorp2matrix(transcorp, bow_corpus, vector_size):
 # Load user's .csv file data set or 20News data set
 def load_corpus(datafile, embedding, preprocess=True, language='english'):
     corpus, slices, data = None, None, None
+    print(preprocess)
     if datafile == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))  # , 'quotes'
         res = pd.Series(source.data, name='res')
@@ -65,7 +66,7 @@ def load_corpus(datafile, embedding, preprocess=True, language='english'):
         print("Currently supported inputs: '20News' or .csv file containing a column called 'text'.")
         sys.exit(1)
     else:
-        data = pd.read_csv(datafile, encoding='utf-8')
+        data = pd.read_csv(datafile, encoding='utf-8').dropna()
         if 'text' not in data.columns:
             print("Column containing text must be called 'text'. Please check your datafile format.")
             sys.exit(1)
@@ -109,7 +110,7 @@ def load_labels(datafile, embedding, vector_size):
         print("Currently supported inputs: '20News' or .csv file containing a column called 'label'.")
         sys.exit(1)
     else:
-        data = pd.read_csv(datafile, encoding='utf-8')
+        data = pd.read_csv(datafile, encoding='utf-8').dropna()
         if 'label' not in data.columns:
             print("Column called 'label' is required to perform classification task.")
             sys.exit(1)
@@ -154,7 +155,7 @@ def read_options():
                         required=True,
                         help="Path to your .csv input file, or '20News'.")
     parser.add_argument('-embed',
-                        choices=['BOW', 'DOC2VEC', 'POOL', 'BOREP', 'LSA', 'LDA', 'HDP', 'DTM', 'STM', 'CTM', 'PTM'],
+                        choices=['BOW', 'DOC2VEC', 'POOL', 'BOREP', 'LSA', 'LDA', 'HDP', 'DTM', 'STM', 'CTM', 'PTM', 'BERT'],
                         required=True,
                         help='Embedding to use.')
     parser.add_argument('-project',
@@ -166,8 +167,9 @@ def read_options():
                         default=200,
                         help='Size of your embedding vectors.')
     parser.add_argument('-prep',
-                        type=bool,
-                        default=True,
+						type=str2bool,
+						nargs='?',
+						default=True,
                         help='Specify if you want to pre-process text (i.e. lowercase, lemmatize...).')
     parser.add_argument('-langu',
                         type=str,
@@ -182,3 +184,14 @@ def read_options():
                         default='NONE',
                         help='Sampling to use to prevent imbalanced data sets.')
     return parser.parse_args()
+
+# Converts string to corresponding boolean
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')

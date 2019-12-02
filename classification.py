@@ -44,7 +44,7 @@ def trained_model(model, X, Y):
     elif model == 'SVM':
         return SVC(kernel='rbf', gamma='scale').fit(X, Y)
     else:
-        return LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=1000).fit(X, Y)
+        return LogisticRegression(multi_class='auto', solver='lbfgs', max_iter=10000).fit(X, Y)
 
 
 # Computer performance metrics of the classifier.

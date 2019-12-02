@@ -111,6 +111,15 @@ def create_dtm_encoding(corpus, vector_size, dictionary, slices):
     return mod.gamma_, mod
 
 
+# Create Sentence Embeddings with BERT & XLNet with sentence_transformers package
+def create_bert_encoding(corpus, vector_size):
+    from sentence_transformers import SentenceTransformer
+    mod = SentenceTransformer('bert-base-nli-mean-tokens')
+    sentences = [' '.join(c) for c in corpus]
+    sentence_embeddings = mod.encode(sentences)
+    return sentence_embeddings, mod
+
+
 # Main function to centralize the call for embedding construction.
 def construct_corpus(corpus, dictionary, method='BOW', vector_size=200, datafile=None, slices=None, language='english'):
     if method == 'DOC2VEC':
@@ -137,6 +146,8 @@ def construct_corpus(corpus, dictionary, method='BOW', vector_size=200, datafile
     elif method == 'PTM':
         print("PTM loads pre-computed embeddings using https://github.com/qiang2100/STTM")
         x, mod = load_ptm_encoding(vector_size)
+    elif method == 'BERT':
+        x, mod = create_bert_encoding(corpus, vector_size)
     else:
         x, mod = create_bow_encoding(corpus, vector_size, dictionary)
     return x, mod
