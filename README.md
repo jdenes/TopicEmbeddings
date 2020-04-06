@@ -1,6 +1,6 @@
 # Topic Embeddings Framework
 
-Topic Embeddings Framework is a Python 3 open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag-of-words or doc2vec. It is based on forthcoming (maybe) paper "Document Embeddings Using Topic Models", a Master's Thesis at Sorbonne Université.
+Topic Embeddings Framework is a Python 3 open-source code to generate and test document embeddings using most common topic models. It is designed to allow easier and centralized generation of such embeddings, and to test their performances against mainstream embeddings such as bag-of-words, doc2vec or BERT. The approach is detailed on the paper ["Document Embeddings Using Topic Models"](./report/TopicEmbeddings.pdf), a Master's Thesis at Sorbonne Université.
 
 **General idea:** the document embeddings we propose, called topic embeddings, use one particular output of any trained topic models, know as topics proportion. It provides for each document a unit vector where the ith component indicates "how much" the document relates to topic i. We test the simple hypothesis that such vector is an insightful representation of the document for various NLP tasks.
 

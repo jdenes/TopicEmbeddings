@@ -50,7 +50,6 @@ def transcorp2matrix(transcorp, bow_corpus, vector_size):
 # Load user's .csv file data set or 20News data set
 def load_corpus(datafile, embedding, preprocess=True, language='english'):
     corpus, slices, data = None, None, None
-    print(preprocess)
     if datafile == '20News':
         source = fetch_20newsgroups(subset='all', remove=('headers', 'footers'))  # , 'quotes'
         res = pd.Series(source.data, name='res')
